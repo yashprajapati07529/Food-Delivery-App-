@@ -1,20 +1,42 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
+import cors from "cors";
+
 import connectDB from "./config/db.js";
 
-dotenv.config();
+import customerRoutes from "./routes/customerRoutes.js";
+import restaurantRoutes from "./routes/restaurantRoutes.js";
+import foodRoutes from "./routes/foodRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import deliveryRoutes from "./routes/deliveryRoutes.js";
 
 const app = express();
 
-const PORT = process.env.PORT 
-
-connectDB();
+app.use(cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send("node.js employee and book api");
+  res.json({
+    success: true,
+    message: "Food Delivery API is running",
+  });
+});
 
-})
+app.use("/api/customers", customerRoutes);
+app.use("/api/restaurants", restaurantRoutes);
+app.use("/api/foods", foodRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/deliverypartners", deliveryRoutes);
 
-app.listen(PORT,(err) => {
-    err ? console.log(err) : console.log(`Server Start : http://localhost:${PORT}`);
-})
+const PORT = process.env.PORT || 5000;
+
+try {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+} catch (error) {
+  console.error("Server startup failed:", error.message);
+  process.exit(1);
+}
