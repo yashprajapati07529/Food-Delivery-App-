@@ -9,12 +9,12 @@ import {
   deleteProfile,
 } from "../controllers/customerControllers.js";
 
-import authMiddleware from "../middleware/authMiddleware.js";
+import customerValidator from"../validators/customerValidator.js";
 
 const router = express.Router();
 
 // Register customer
-router.post("/register", registerCustomer);
+router.post("/register", customerValidator, registerCustomer);
 
 // Login customer
 router.post("/login", loginCustomer);
