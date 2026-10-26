@@ -9,10 +9,12 @@ import {
   cancelOrder,
 } from "../controllers/orderControllers.js";
 
+import orderValidator from "../validation/orderValidator.js";
+
 const router = express.Router();
 
 // Place new order
-router.post("/", placeOrder);
+router.post("/", orderValidator, placeOrder);
 
 // Get all orders or filter by customer
 router.get("/", getOrders);
@@ -21,9 +23,9 @@ router.get("/", getOrders);
 router.get("/:id", getOrderById);
 
 // Update order status
-router.put("/:id", updateOrderStatus);
+router.put("/:id", orderValidator, updateOrderStatus);
 
 // Cancel order
-router.delete("/:id", cancelOrder);
+router.delete("/:id", orderValidator, cancelOrder);
 
 export default router;

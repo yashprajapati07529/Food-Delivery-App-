@@ -9,7 +9,7 @@ import {
   deleteProfile,
 } from "../controllers/customerControllers.js";
 
-import customerValidator from"../validators/customerValidator.js";
+import customerValidator from"../validation/customerValidator.js";
 
 const router = express.Router();
 
@@ -20,12 +20,12 @@ router.post("/register", customerValidator, registerCustomer);
 router.post("/login", loginCustomer);
 
 // Get logged-in customer profile
-router.get("/profile", authMiddleware, getProfile);
+router.get("/profile", getProfile);
 
 // Update customer profile
-router.put("/:id", authMiddleware, updateProfile);
+router.put("/:id", updateProfile);
 
 // Delete customer profile
-router.delete("/:id", authMiddleware, deleteProfile);
+router.delete("/:id", deleteProfile);
 
 export default router;

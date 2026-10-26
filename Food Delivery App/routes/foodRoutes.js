@@ -9,10 +9,12 @@ import {
   deleteFood,
 } from "../controllers/foodControllers.js";
 
+import foodValidator from "../validation/foodValidator.js";
+
 const router = express.Router();
 
 // Add food item
-router.post("/", addFood);
+router.post("/", foodValidator, addFood);
 
 // Get all food items
 router.get("/", getFoods);
@@ -21,9 +23,9 @@ router.get("/", getFoods);
 router.get("/:id", getFoodById);
 
 // Update food item
-router.put("/:id", updateFood);
+router.put("/:id", foodValidator, updateFood);
 
 // Delete food item
-router.delete("/:id", deleteFood);
+router.delete("/:id", foodValidator, deleteFood);
 
 export default router;

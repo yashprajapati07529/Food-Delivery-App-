@@ -16,7 +16,7 @@ const customerSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      default: "",
       minlength: 6,
       select: false,
     },
