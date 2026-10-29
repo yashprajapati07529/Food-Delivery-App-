@@ -2,6 +2,7 @@
 import Customer from "../models/CustomerModels.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 // 1. REGISTER CUSTOMER
 export const registerCustomer = async (req, res) => {
@@ -272,5 +273,61 @@ export const deleteProfile = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+export const updateCustomerRecord = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ success: false, message: "Invalid customer ID" });
+    }
+
+    const allowedFields = ["name", "email", "phone", "address", "city", "profileImage"];
+    const updates = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) updates[field] = req.body[field];
+    }
+    if (updates.email) updates.email = updates.email.trim().toLowerCase();
+
+    const customer = await Customer.findByIdAndUpdate(
+      req.params.id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!customer) {
+      return res.status(404).json({ success: false, message: "Customer not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Customer updated successfully",
+      customer,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ success: false, message: "Email already registered" });
+    }
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const deleteCustomerRecord = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ success: false, message: "Invalid customer ID" });
+    }
+
+    const customer = await Customer.findByIdAndDelete(req.params.id);
+    if (!customer) {
+      return res.status(404).json({ success: false, message: "Customer not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Customer deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };

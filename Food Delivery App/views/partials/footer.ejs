@@ -1,0 +1,36 @@
+
+<footer class="border-t border-slate-200 bg-white">
+  <div class="mx-auto grid max-w-5xl gap-8 px-4 py-8 sm:px-6 md:grid-cols-[1.4fr_0.7fr_0.7fr]">
+    <section>
+      <a href="/" class="inline-flex items-center gap-2 text-slate-800"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500 text-white" aria-hidden="true">🍴</span><span class="font-bold">FoodDelivery <span class="text-orange-600">REST API</span></span></a>
+      <p class="mt-3 max-w-md text-xs leading-5 text-slate-500">Comprehensive food delivery backend platform for customers, restaurants, food items, orders and delivery partners.</p>
+      <div class="mt-4 flex flex-wrap gap-2 text-[10px] font-medium text-slate-600">
+        <span class="rounded border border-slate-200 bg-slate-50 px-2 py-1">◉ Node.js</span><span class="rounded border border-slate-200 bg-slate-50 px-2 py-1">▦ Express 5</span><span class="rounded border border-slate-200 bg-slate-50 px-2 py-1">◉ MongoDB</span><span class="rounded border border-slate-200 bg-slate-50 px-2 py-1">✦ Tailwind CSS</span>
+      </div>
+    </section>
+    <section>
+      <h2 class="text-[10px] font-bold uppercase tracking-wider text-slate-700">API Modules</h2>
+      <nav class="mt-3 grid gap-2 text-xs text-slate-500" aria-label="Footer API module links">
+        <a class="hover:text-orange-600" href="/?page=customers">♟ Customer Module</a>
+        <a class="hover:text-orange-600" href="/?page=restaurants">▣ Restaurant Module</a>
+        <a class="hover:text-orange-600" href="/?page=foods">▤ Food Item Module</a>
+        <a class="hover:text-orange-600" href="/?page=orders">▣ Order Module</a>
+        <a class="hover:text-orange-600" href="/?page=delivery">⚙ Delivery Partner</a>
+      </nav>
+    </section>
+    <section>
+      <h2 class="text-[10px] font-bold uppercase tracking-wider text-slate-700">System Details</h2>
+      <dl class="mt-3 space-y-2 text-[10px]">
+        <div class="flex justify-between rounded-md bg-slate-50 px-2.5 py-2"><dt class="text-slate-500">Environment:</dt><dd class="font-semibold text-slate-700"><%= typeof environment !== "undefined" ? environment : "Development" %></dd></div>
+        <div class="flex justify-between rounded-md bg-slate-50 px-2.5 py-2"><dt class="text-slate-500">Version:</dt><dd class="font-semibold text-slate-700">v1.0.0</dd></div>
+        <div class="flex justify-between rounded-md bg-slate-50 px-2.5 py-2"><dt class="text-slate-500">API Base:</dt><dd class="font-semibold text-orange-600">/api/</dd></div>
+      </dl>
+    </section>
+  </div>
+  <div class="border-t border-slate-100">
+    <div class="mx-auto flex max-w-5xl flex-col justify-between gap-2 px-4 py-3 text-[10px] text-slate-400 sm:flex-row sm:px-6">
+      <span>© <%= new Date().getFullYear() %> FoodDelivery API Platform. All rights reserved.</span>
+      <span class="font-medium text-emerald-600" data-footer-health>● REST Service Running</span>
+    </div>
+  </div>
+</footer>

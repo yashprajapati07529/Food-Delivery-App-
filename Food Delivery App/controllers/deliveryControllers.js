@@ -13,6 +13,7 @@ export const registerPartner = async (req, res) => {
       vehicleType,
       licenseNumber,
       profileImage,
+      isActive,
       currentLocation,
     } = req.body;
 
@@ -55,6 +56,7 @@ export const registerPartner = async (req, res) => {
       vehicleType,
       licenseNumber: licenseNumber.trim(),
       profileImage,
+      isActive,
       currentLocation,
     });
 

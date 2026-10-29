@@ -1,0 +1,36 @@
+<% if (typeof records === "undefined") { %>
+  <article class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><span class="text-sm font-medium text-slate-500">Total orders</span><span class="text-lg" aria-hidden="true">🧾</span></div><p class="mt-4 text-3xl font-bold text-slate-900"><%= Number(count).toLocaleString("en-IN") %></p><p class="mt-1 text-xs text-slate-500">Orders in the system</p></article>
+<% } else { %>
+  <section class="space-y-5">
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p class="text-sm text-slate-500">Total orders</p><p class="mt-1 text-2xl font-bold text-slate-900"><%= Number(count).toLocaleString("en-IN") %></p></div>
+    <details class="group rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <summary class="flex cursor-pointer list-none items-center justify-between px-5 py-4 font-semibold text-slate-800"><span>Create order</span><span class="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white">+ New order</span></summary>
+      <form class="grid gap-4 border-t border-slate-100 p-5 sm:grid-cols-2 lg:grid-cols-3" data-api-endpoint="/api/orders" data-order-form>
+        <label class="text-sm font-medium text-slate-700">Customer<select class="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 font-normal" name="customerId" required><option value="">Select customer</option><% customersForSelect.forEach((customer) => { %><option value="<%= customer._id %>"><%= customer.name %></option><% }); %></select></label>
+        <label class="text-sm font-medium text-slate-700">Restaurant<select class="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 font-normal" name="restaurantId" required><option value="">Select restaurant</option><% restaurantsForSelect.forEach((restaurant) => { %><option value="<%= restaurant._id %>"><%= restaurant.name %></option><% }); %></select></label>
+        <label class="text-sm font-medium text-slate-700">Food item<select class="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 font-normal" name="foodId" required><option value="">Select food item</option><% foodsForSelect.forEach((food) => { %><option value="<%= food._id %>"><%= food.title %></option><% }); %></select></label>
+        <label class="text-sm font-medium text-slate-700">Quantity<input class="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 font-normal" type="number" name="quantity" min="1" value="1" required></label>
+        <label class="text-sm font-medium text-slate-700">Payment method<select class="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 font-normal" name="paymentMethod"><option value="cash">Cash</option><option value="card">Card</option><option value="upi">UPI</option></select></label>
+        <label class="text-sm font-medium text-slate-700">Delivery address<input class="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 font-normal" name="deliveryAddress" required placeholder="Delivery address"></label>
+        <div class="sm:col-span-2 lg:col-span-3"><button class="rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white" type="submit">Create order</button></div>
+      </form>
+    </details>
+    <form method="get" action="/" data-auto-filter class="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-5">
+      <input type="hidden" name="page" value="orders">
+      <label class="text-sm font-medium text-slate-700">Search<input class="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 font-normal" type="search" name="search" value="<%= filters.search %>" placeholder="Customer or restaurant" data-filter-search></label>
+      <label class="text-sm font-medium text-slate-700">Order status<select class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-normal" name="status"><option value="">All statuses</option><% ["placed", "preparing", "out_for_delivery", "delivered", "cancelled"].forEach((status) => { %><option value="<%= status %>" <%= filters.status === status ? "selected" : "" %>><%= status.replace(/_/g, " ") %></option><% }); %></select></label>
+      <label class="text-sm font-medium text-slate-700">Payment method<select class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-normal" name="paymentMethod"><option value="">All methods</option><% ["cash", "card", "upi"].forEach((method) => { %><option value="<%= method %>" <%= filters.paymentMethod === method ? "selected" : "" %>><%= method.toUpperCase() %></option><% }); %></select></label>
+      <label class="text-sm font-medium text-slate-700">Sort by<select class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-normal" name="sort"><option value="newest" <%= filters.sort !== "oldest" ? "selected" : "" %>>Newest</option><option value="oldest" <%= filters.sort === "oldest" ? "selected" : "" %>>Oldest</option></select></label>
+    </form>
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"><div class="overflow-x-auto">
+      <table class="w-full min-w-[750px] text-left text-sm">
+        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th class="px-5 py-3">Order</th><th class="px-5 py-3">Customer</th><th class="px-5 py-3">Restaurant</th><th class="px-5 py-3">Amount</th><th class="px-5 py-3">Status</th><th class="px-5 py-3 text-right">Action</th></tr></thead>
+        <tbody class="divide-y divide-slate-100">
+          <% if (records.length) { records.forEach((order) => { %>
+            <tr><td class="px-5 py-4 font-semibold text-emerald-800">#<%= String(order._id).slice(-7).toUpperCase() %></td><td class="px-5 py-4 text-slate-600"><%= order.customerId?.name || "Customer" %></td><td class="px-5 py-4 text-slate-600"><%= order.restaurantId?.name || "Restaurant" %></td><td class="px-5 py-4 font-semibold text-slate-800">₹<%= Number(order.totalAmount).toLocaleString("en-IN") %></td><td class="px-5 py-4"><span class="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium capitalize text-amber-700"><%= String(order.status).replace(/_/g, " ") %></span></td><td class="px-5 py-4 text-right"><div class="flex justify-end gap-2"><select class="rounded border border-slate-200 px-2 py-1 text-sm" aria-label="Update order status" data-order-status="<%= order._id %>"><% ["placed", "preparing", "out_for_delivery", "delivered", "cancelled"].forEach((status) => { %><option value="<%= status %>" <%= order.status === status ? "selected" : "" %>><%= status.replace(/_/g, " ") %></option><% }); %></select><button class="font-medium text-emerald-700" type="button" data-update-order="<%= order._id %>">Update</button><button class="font-medium text-rose-600" type="button" data-delete-endpoint="/api/orders/<%= order._id %>">Cancel</button></div></td></tr>
+          <% }); } else { %><tr><td class="px-5 py-10 text-center text-slate-500" colspan="6">No orders found yet.</td></tr><% } %>
+        </tbody>
+      </table>
+    </div></div>
+  </section>
+<% } %>

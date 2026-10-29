@@ -9,12 +9,13 @@ import {
   deletePartner,
 } from "../controllers/deliveryControllers.js";
 
-import deliveryValidator from "../validation/deliveryValidator.js";
+import deliveryValidator, { deliveryUpdateValidator } from "../validation/deliveryValidator.js";
+import validateRequest from "../validation/validateRequest.js";
 
 const router = express.Router();
 
 // Register delivery partner
-router.post("/", deliveryValidator, registerPartner);
+router.post("/", deliveryValidator, validateRequest, registerPartner);
 
 // Get all delivery partners
 router.get("/", getPartners);
@@ -23,7 +24,7 @@ router.get("/", getPartners);
 router.get("/:id", getPartnerById);
 
 // Update delivery partner
-router.put("/:id", deliveryValidator, updatePartner);
+router.put("/:id", deliveryUpdateValidator, validateRequest, updatePartner);
 
 // Delete delivery partner
 router.delete("/:id", deletePartner);

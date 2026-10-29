@@ -10,11 +10,12 @@ import {
 } from "../controllers/restaurantControllers.js";
 
 import restaurantValidator from "../validation/restaurantValidator.js";
+import validateRequest from "../validation/validateRequest.js";
 
 const router = express.Router();
 
 // Add restaurant
-router.post("/", restaurantValidator, addRestaurant);
+router.post("/", restaurantValidator, validateRequest, addRestaurant);
 
 // Get all restaurants, with search and pagination
 router.get("/", getRestaurants);
@@ -23,9 +24,9 @@ router.get("/", getRestaurants);
 router.get("/:id", getRestaurantById);
 
 // Update restaurant
-router.put("/:id", restaurantValidator, updateRestaurant);
+router.put("/:id", restaurantValidator, validateRequest, updateRestaurant);
 
 // Delete restaurant
-router.delete("/:id", restaurantValidator, deleteRestaurant);
+router.delete("/:id", deleteRestaurant);
 
 export default router;

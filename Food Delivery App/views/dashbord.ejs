@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8fafc">
+  <title>Dashboard | FoodDelivery REST API</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+  <div class="min-h-screen">
+    <%- include("partials/header") %>
+
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <% if (page === "dashboard") { %>
+        <section class="mx-auto max-w-5xl">
+          <div class="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <% const metricCards = [
+              { label: "Customers", count: dashboardCounts.customers, caption: "Manage Users", icon: "♟", color: "text-orange-600", tint: "bg-orange-50", page: "customers" },
+              { label: "Restaurants", count: dashboardCounts.restaurants, caption: "Vendors & Menus", icon: "▣", color: "text-amber-600", tint: "bg-amber-50", page: "restaurants" },
+              { label: "Food Items", count: dashboardCounts.foods, caption: "Dishes & Pricing", icon: "▤", color: "text-rose-600", tint: "bg-rose-50", page: "foods" },
+              { label: "Orders", count: dashboardCounts.orders, caption: "Live Orders", icon: "▣", color: "text-blue-600", tint: "bg-blue-50", page: "orders" },
+              { label: "Delivery", count: dashboardCounts.deliveryPartners, caption: "Fleet Partners", icon: "⚙", color: "text-emerald-600", tint: "bg-emerald-50", page: "delivery" },
+            ]; %>
+            <% metricCards.forEach((card) => { %>
+              <a href="/?page=<%= card.page %>" class="rounded-xl border border-slate-200 bg-white px-3 py-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-md">
+                <span class="mx-auto flex h-8 w-8 items-center justify-center rounded-lg <%= card.tint %> text-lg <%= card.color %>" aria-hidden="true"><%= card.icon %></span>
+                <span class="mt-1 block text-lg font-extrabold leading-5 <%= card.color %>"><%= Number(card.count).toLocaleString("en-IN") %></span>
+                <span class="mt-1 block text-[10px] font-semibold text-slate-700"><%= card.label %></span>
+                <span class="mt-0.5 block text-[9px] text-slate-400"><%= card.caption %></span>
+              </a>
+            <% }); %>
+          </div>
+
+          <div class="grid items-stretch gap-4 lg:grid-cols-[1.7fr_0.85fr]">
+            <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+              <h1 class="flex items-center gap-2 text-sm font-bold text-slate-800"><span class="text-orange-600">▤</span> API Overview &amp; Endpoints</h1>
+              <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                <% const apiModules = [
+                  { name: "Customer Module", endpoint: "POST /api/customers/register", icon: "♟", color: "text-orange-600", page: "customers" },
+                  { name: "Restaurant Module", endpoint: "GET /api/restaurants", icon: "▣", color: "text-amber-600", page: "restaurants" },
+                  { name: "Food Items Module", endpoint: "GET /api/foods", icon: "▤", color: "text-rose-600", page: "foods" },
+                  { name: "Order Module", endpoint: "GET /api/orders", icon: "▣", color: "text-blue-600", page: "orders" },
+                  { name: "Delivery Partner Module", endpoint: "GET /api/deliverypartners", icon: "⚙", color: "text-emerald-600", page: "delivery" },
+                ]; %>
+                <% apiModules.forEach((module, index) => { %>
+                  <a href="/?page=<%= module.page %>" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-orange-200 hover:bg-orange-50 <%= index === 4 ? 'sm:col-span-2' : '' %>">
+                    <span class="block text-[11px] font-semibold text-slate-700"><span class="<%= module.color %>"><%= module.icon %></span><span class="ml-1"><%= module.name %></span></span>
+                    <code class="mt-1 block text-[9px] text-slate-500"><%= module.endpoint %></code>
+                  </a>
+                <% }); %>
+              </div>
+            </section>
+
+            <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+              <div data-admin-signed-out>
+                <h2 class="text-sm font-bold text-slate-800">Admin Sign In</h2>
+                <p class="mt-1 text-[10px] text-slate-400">Quick login to access admin features</p>
+                <form class="mt-3 space-y-2.5" data-admin-login>
+                  <label class="block text-[10px] font-medium text-slate-700">Email Address
+                    <input class="mt-1 w-full rounded-md border border-slate-300 bg-slate-50 px-2.5 py-2 text-[10px] outline-none placeholder:text-slate-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100" type="email" name="email" autocomplete="username" required placeholder="admin@fooddelivery.com">
+                  </label>
+                  <label class="block text-[10px] font-medium text-slate-700">Password
+                    <input class="mt-1 w-full rounded-md border border-slate-300 bg-slate-50 px-2.5 py-2 text-[10px] outline-none placeholder:text-slate-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100" type="password" name="password" autocomplete="current-password" required placeholder="Enter your password">
+                  </label>
+                  <div class="flex items-center justify-between text-[10px]">
+                    <label class="inline-flex items-center gap-1.5 text-slate-600"><input class="rounded border-slate-300 text-orange-600 focus:ring-orange-500" type="checkbox" name="remember"> Remember</label>
+                    <button class="font-medium text-orange-600 hover:text-orange-700" type="button" data-admin-forgot>Forgot?</button>
+                  </div>
+                  <p class="hidden rounded-md bg-rose-50 px-2 py-1.5 text-[10px] text-rose-700" role="alert" data-admin-message></p>
+                  <button class="w-full rounded-md bg-orange-600 px-3 py-2 text-[10px] font-bold text-white transition hover:bg-orange-700 disabled:opacity-60" type="submit" data-admin-submit>Sign In</button>
+                </form>
+              </div>
+              <div class="hidden" data-admin-signed-in>
+                <h2 class="text-sm font-bold text-slate-800">Admin Signed In</h2>
+                <p class="mt-1 text-[10px] text-slate-500" data-signed-in-email></p>
+                <p class="mt-3 rounded-md bg-emerald-50 px-3 py-2 text-[10px] text-emerald-700">You can now add, edit and delete dashboard records.</p>
+                <button class="mt-3 w-full rounded-md border border-slate-200 px-3 py-2 text-[10px] font-semibold text-slate-700 hover:bg-slate-50" type="button" data-admin-logout>Sign Out</button>
+              </div>
+            </section>
+          </div>
+        </section>
+      <% } else { %>
+        <section class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="mb-2 text-sm font-semibold uppercase tracking-wide text-emerald-700">Management</p>
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900"><%= ({ customers: "Customers", orders: "Orders", restaurants: "Restaurants", foods: "Food menu", delivery: "Delivery partners" })[page] %></h1>
+            <p class="mt-2 text-sm text-slate-500">View and manage your <%= page === "foods" ? "food menu" : page %>.</p>
+          </div>
+          <a href="/" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">← Back to dashboard</a>
+        </section>
+
+        <% if (page === "customers") { %>
+          <%- include("partials/customer", { count: dashboardCounts.customers, records }) %>
+        <% } else if (page === "orders") { %>
+          <%- include("partials/order", { count: dashboardCounts.orders, records, customersForSelect, restaurantsForSelect, foodsForSelect }) %>
+        <% } else if (page === "restaurants") { %>
+          <%- include("partials/restaurant", { count: dashboardCounts.restaurants, records }) %>
+        <% } else if (page === "foods") { %>
+          <%- include("partials/food", { count: dashboardCounts.foods, records, restaurantsForSelect }) %>
+        <% } else if (page === "delivery") { %>
+          <%- include("partials/delivery", { count: dashboardCounts.deliveryPartners, records }) %>
+        <% } %>
+      <% } %>
+    </main>
+
+    <%- include("partials/footer") %>
+  </div>
+  <script>
+    const toAdminEndpoint = (url) => {
+      if (url === "/api/customers/register") return "/admin-api/customers";
+      if (url.startsWith("/api/customers/admin/")) {
+        return url.replace("/api/customers/admin/", "/admin-api/customers/");
+      }
+      return url.replace(/^\/api\/(deliverypartners|restaurants|foods|orders)(?=\/|$)/, "/admin-api/$1");
+    };
+
+    const adminFetch = (url, options = {}) => fetch(toAdminEndpoint(url), options);
+
+    const readApiResponse = async (response) => {
+      const result = await response.json();
+      if (!response.ok || result.success !== true) {
+        const validationMessages = result.errors?.map((error) => error.message) || [];
+        throw new Error(validationMessages.join(", ") || result.message || "The request could not be completed.");
+      }
+      return result;
+    };
+
+    document.querySelectorAll("form[data-auto-filter]").forEach((form) => {
+      let searchTimer;
+      form.querySelectorAll("[data-filter-search]").forEach((input) => {
+        input.addEventListener("input", () => {
+          window.clearTimeout(searchTimer);
+          searchTimer = window.setTimeout(() => form.requestSubmit(), 350);
+        });
+      });
+      form.querySelectorAll("select, input:not([type='hidden']):not([type='search'])").forEach((input) => {
+        input.addEventListener("change", () => form.requestSubmit());
+      });
+    });
+
+    document.querySelectorAll("[data-image-url]").forEach((input) => {
+      const preview = input.parentElement.querySelector("[data-image-preview]");
+      const updatePreview = () => {
+        const url = input.value.trim();
+        preview.src = url;
+        preview.classList.toggle("hidden", !url);
+      };
+      input.addEventListener("input", updatePreview);
+      preview.addEventListener("error", () => preview.classList.add("hidden"));
+    });
+
+    document.querySelectorAll("form[data-api-endpoint]").forEach((form) => {
+      form.dataset.createEndpoint = form.dataset.apiEndpoint;
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        let message = form.querySelector("[data-form-message]");
+        if (!message) {
+          message = document.createElement("p");
+          message.dataset.formMessage = "";
+          message.className = "sm:col-span-2 lg:col-span-3 text-sm";
+          form.prepend(message);
+        }
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        if (form.matches("[data-order-form]")) {
+          payload.foodItems = [{
+            foodId: payload.foodId,
+            quantity: Number(payload.quantity),
+          }];
+          delete payload.foodId;
+          delete payload.quantity;
+        }
+
+        if (form.dataset.entity === "delivery" && form.dataset.method === "PUT" && !payload.licenseNumber) {
+          delete payload.licenseNumber;
+        }
+
+        if (payload.price !== undefined) payload.price = Number(payload.price);
+        if (payload.rating !== undefined) payload.rating = Number(payload.rating);
+        if (payload.isAvailable !== undefined) payload.isAvailable = payload.isAvailable === "true";
+        if (payload.isActive !== undefined) payload.isActive = payload.isActive === "true";
+
+        submitButton.disabled = true;
+        submitButton.classList.add("opacity-60", "cursor-not-allowed");
+        message.className = "sm:col-span-2 lg:col-span-3 text-sm text-slate-500";
+        message.textContent = "Saving...";
+
+        try {
+          const response = await adminFetch(form.dataset.apiEndpoint, {
+            method: form.dataset.method || "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const result = await readApiResponse(response);
+
+          message.className = "sm:col-span-2 lg:col-span-3 text-sm text-emerald-700";
+          message.textContent = result.message || "Saved successfully. Refreshing the list...";
+          window.setTimeout(() => window.location.reload(), 700);
+        } catch (error) {
+          message.className = "sm:col-span-2 lg:col-span-3 text-sm text-rose-600";
+          message.textContent = error.message || "Could not connect to the server. Please try again.";
+          submitButton.disabled = false;
+          submitButton.classList.remove("opacity-60", "cursor-not-allowed");
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-edit-record]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const record = JSON.parse(decodeURIComponent(button.dataset.editRecord));
+        const page = new URLSearchParams(location.search).get("page");
+        const entity = ({ customers: "customer", delivery: "delivery", foods: "food", restaurants: "restaurant" })[page];
+        const form = document.querySelector(`[data-entity="${entity}"]`);
+        const details = form.closest("details");
+        const passwordLabel = form.elements.password?.closest("label");
+        const licenseLabel = form.elements.licenseNumber?.closest("label");
+        details.open = true;
+
+        for (const field of form.elements) {
+          if (!field.name || field.type === "submit" || field.type === "button" || field.name === "password") continue;
+          let value = record[field.name];
+          if (field.name === "restaurantId" && value && typeof value === "object") value = value._id;
+          if (value !== undefined && value !== null) {
+            field.value = String(value);
+            if (field.matches("[data-image-url]")) field.dispatchEvent(new Event("input"));
+          }
+        }
+
+        if (passwordLabel) {
+          passwordLabel.hidden = true;
+          form.elements.password.required = false;
+          form.elements.password.disabled = true;
+        }
+        if (licenseLabel && record.licenseNumber === undefined) {
+          form.elements.licenseNumber.value = "";
+          form.elements.licenseNumber.required = false;
+          form.elements.licenseNumber.placeholder = "Leave blank to keep current license";
+        }
+
+        form.dataset.method = "PUT";
+        form.dataset.apiEndpoint = `${form.dataset.editEndpoint}/${record._id}`;
+        details.querySelector("summary span")?.replaceChildren(document.createTextNode(`Edit ${form.dataset.entity}`));
+        form.querySelector('button[type="submit"]').textContent = `Update ${form.dataset.entity}`;
+        form.querySelector("[data-cancel-edit]").hidden = false;
+        form.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+
+    document.querySelectorAll("[data-cancel-edit]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const form = button.closest("form");
+        const details = form.closest("details");
+        form.reset();
+        delete form.dataset.method;
+        form.dataset.apiEndpoint = form.dataset.createEndpoint;
+        form.elements.password && (form.elements.password.required = true);
+        form.elements.password && (form.elements.password.disabled = false);
+        form.elements.password?.closest("label") && (form.elements.password.closest("label").hidden = false);
+        form.elements.licenseNumber && (form.elements.licenseNumber.required = true);
+        form.elements.licenseNumber && (form.elements.licenseNumber.placeholder = "Driving license number");
+        form.elements.licenseNumber?.closest("label") && (form.elements.licenseNumber.closest("label").hidden = false);
+        details.querySelector("summary span")?.replaceChildren(document.createTextNode(
+          form.dataset.entity === "delivery" ? "Register delivery partner" :
+          form.dataset.entity === "food" ? "Add food item" :
+          form.dataset.entity === "restaurant" ? "Add restaurant" : "Add customer"
+        ));
+        form.querySelector('button[type="submit"]').textContent =
+          form.dataset.entity === "delivery" ? "Save partner" :
+          form.dataset.entity === "food" ? "Save food item" :
+          form.dataset.entity === "restaurant" ? "Save restaurant" : "Save customer";
+        button.hidden = true;
+        details.open = false;
+      });
+    });
+
+    document.querySelectorAll("[data-delete-endpoint]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const isOrder = new URLSearchParams(location.search).get("page") === "orders";
+        const prompt = isOrder ? "Cancel this order?" : "Delete this record? This action cannot be undone.";
+        if (!window.confirm(prompt)) return;
+
+        button.disabled = true;
+        try {
+          const result = await readApiResponse(await adminFetch(button.dataset.deleteEndpoint, { method: "DELETE" }));
+          window.alert(result.message || "Action completed.");
+          window.location.reload();
+        } catch (error) {
+          window.alert(error.message || "The request could not be completed.");
+          button.disabled = false;
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-update-order]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const row = button.closest("tr");
+        const status = row.querySelector("[data-order-status]").value;
+        button.disabled = true;
+        try {
+          const result = await readApiResponse(await adminFetch(`/api/orders/${button.dataset.updateOrder}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status }),
+          }));
+          window.alert(result.message || "Order status updated.");
+          window.location.reload();
+        } catch (error) {
+          window.alert(error.message || "Could not update order status.");
+          button.disabled = false;
+        }
+      });
+    });
+
+    const healthBadge = document.querySelector("[data-health-badge]");
+    const footerHealth = document.querySelector("[data-footer-health]");
+    const checkApiHealth = async () => {
+      try {
+        const response = await fetch("/api/health");
+        const health = await response.json();
+        const online = response.ok && health.status === "online";
+        if (healthBadge) {
+          healthBadge.className = `hidden rounded-full border px-3 py-1.5 text-[11px] font-semibold sm:inline-flex ${online ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-rose-200 bg-rose-50 text-rose-700"}`;
+          healthBadge.querySelector("[data-health-label]").textContent = online ? "API Online" : "API Offline";
+        }
+        if (footerHealth) {
+          footerHealth.textContent = online ? "● REST Service Running" : "● REST Service Offline";
+          footerHealth.className = online ? "font-medium text-emerald-600" : "font-medium text-rose-600";
+        }
+        return online;
+      } catch {
+        if (footerHealth) {
+          footerHealth.textContent = "● REST Service Offline";
+          footerHealth.className = "font-medium text-rose-600";
+        }
+        return false;
+      }
+    };
+
+    document.querySelector("[data-health-check]")?.addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = "Checking...";
+      await checkApiHealth();
+      button.textContent = "⌁ Health Check";
+      button.disabled = false;
+    });
+    checkApiHealth();
+
+    const showAdminSession = (session) => {
+      const signedIn = Boolean(session?.authenticated);
+      document.querySelectorAll("[data-admin-signed-out]").forEach((panel) => panel.classList.toggle("hidden", signedIn));
+      document.querySelectorAll("[data-admin-signed-in]").forEach((panel) => panel.classList.toggle("hidden", !signedIn));
+      document.querySelectorAll("[data-admin-email]").forEach((label) => {
+        label.textContent = signedIn ? session.email : "";
+        label.classList.toggle("hidden", !signedIn);
+      });
+      document.querySelectorAll("[data-signed-in-email]").forEach((label) => {
+        label.textContent = session?.email || "";
+      });
+      document.querySelectorAll("[data-admin-logout]").forEach((button) => button.classList.toggle("hidden", !signedIn));
+    };
+
+    fetch("/api/admin/session")
+      .then((response) => response.json())
+      .then(showAdminSession)
+      .catch(() => showAdminSession(null));
+
+    document.querySelector("[data-admin-login]")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("[data-admin-submit]");
+      const message = form.querySelector("[data-admin-message]");
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.remember = form.elements.remember.checked;
+      button.disabled = true;
+      button.textContent = "Signing in...";
+      message.classList.add("hidden");
+
+      try {
+        const response = await fetch("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        if (!response.ok || result.success !== true) throw new Error(result.message || "Sign-in failed.");
+        window.location.reload();
+      } catch (error) {
+        message.textContent = error.message || "Could not connect to the server.";
+        message.classList.remove("hidden");
+        button.disabled = false;
+        button.textContent = "Sign In";
+      }
+    });
+
+    document.querySelectorAll("[data-admin-logout]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        button.disabled = true;
+        try {
+          const response = await fetch("/api/admin/logout", { method: "POST" });
+          const result = await response.json();
+          if (!response.ok || result.success !== true) throw new Error(result.message || "Sign out failed.");
+          window.location.reload();
+        } catch (error) {
+          window.alert(error.message || "Could not sign out.");
+          button.disabled = false;
+        }
+      });
+    });
+
+    document.querySelector("[data-admin-forgot]")?.addEventListener("click", () => {
+      const message = document.querySelector("[data-admin-message]");
+      message.textContent = "To reset admin access, update ADMIN_PASSWORD_HASH in your .env file.";
+      message.classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>

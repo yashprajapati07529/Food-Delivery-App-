@@ -10,11 +10,12 @@ import {
 } from "../controllers/foodControllers.js";
 
 import foodValidator from "../validation/foodValidator.js";
+import validateRequest from "../validation/validateRequest.js";
 
 const router = express.Router();
 
 // Add food item
-router.post("/", foodValidator, addFood);
+router.post("/", foodValidator, validateRequest, addFood);
 
 // Get all food items
 router.get("/", getFoods);
@@ -23,9 +24,9 @@ router.get("/", getFoods);
 router.get("/:id", getFoodById);
 
 // Update food item
-router.put("/:id", foodValidator, updateFood);
+router.put("/:id", foodValidator, validateRequest, updateFood);
 
 // Delete food item
-router.delete("/:id", foodValidator, deleteFood);
+router.delete("/:id", deleteFood);
 
 export default router;

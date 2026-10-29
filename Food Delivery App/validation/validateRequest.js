@@ -6,7 +6,7 @@ const validateRequest = (req, res, next) => {
 
     if(!errors.isEmpty()){
         return res.status(422).json({
-            success:true,
+            success:false,
             errors:errors.array().map(error => ({
                 field:error.path,
                 message:error.msg
